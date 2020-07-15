@@ -56,11 +56,25 @@ public class ArticleService extends Service {
 		return articleDao.modify(id, cateItemId, regDate, title, body);
 	}
 
-	public int comment(String articleId, String memberId, String body) {
-		return articleDao.comment(articleId, memberId, body);
+	public String getForPrintMemberNickName(int memberId) {
+		return articleDao.getForPrintMemberNickName(memberId);
+	}
+	
+	// ArticleReply Start
+	public int reply(String articleId, String memberId, String body) {
+		return articleDao.reply(articleId, memberId, body);
 	}
 
+	public void deleteReply(int id) {
+		articleDao.deleteReply(id);
+	}
+
+	public int modifyReply(int replyId, int articleId, int memberId, String regDate, String body) {
+		return articleDao.modifyReply(replyId, articleId, memberId, regDate, body);
+	}
+	
 	public List<ArticleReply> commentList(int articleId) {
 		return articleDao.commentList(articleId);
 	}
+	// ArticleReply End
 }

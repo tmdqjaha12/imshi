@@ -32,6 +32,12 @@
 							name="nickname" /></td>
 						<td><button>중복확인</button></td>
 					</tr>
+					
+					<tr>
+						<th>이메일:</th>
+						<td><input type="email" placeholder="이메일을 입력하세요. "
+							name="email" /></td>
+					</tr>
 
 					<tr>
 						<th>비밀번호:</th>

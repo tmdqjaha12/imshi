@@ -80,7 +80,7 @@ public class ArticleDao extends Dao {
 		secSql.append("WHERE 1");
 		secSql.append("AND id = ?", id);
 		secSql.append("AND displayStatus = '1'");
-
+		
 		return new Article(dbUtil.selectRow(dbConn, secSql));
 	}
 
@@ -182,7 +182,7 @@ public class ArticleDao extends Dao {
 		return dbUtil.update(dbConn, sql);
 	}
 
-	public int comment(String articleId, String memberId, String body) {
+	public int reply(String articleId, String memberId, String body) {
 		SecSql sql = new SecSql();
 
 		sql.append("INSERT INTO articleReply");
@@ -212,5 +212,41 @@ public class ArticleDao extends Dao {
 		}
 
 		return ArticleReplies;
+	}
+
+	public String getForPrintMemberNickName(int memberId) {
+		SecSql secSql = new SecSql();
+
+		secSql.append("SELECT nickname");
+		secSql.append("FROM member");
+		secSql.append("WHERE id = ?", memberId);
+		
+		return dbUtil.selectRowStringValue(dbConn, secSql);
+	}
+
+	public void deleteReply(int id) {
+		SecSql secSql = new SecSql();
+
+		secSql.append("DELETE FROM articleReply");
+		secSql.append("WHERE 1");
+		secSql.append("AND id = ?", id);
+
+		dbUtil.deleteRow(dbConn, secSql);
+		
+	}
+
+	public int modifyReply(int id, int articleId, int memberId, String regDate, String body) {
+		SecSql sql = new SecSql();
+
+		sql.append("UPDATE articleReply");
+		sql.append("SET regDate = ?", regDate);
+		sql.append(", updateDate = NOW()");
+		sql.append(", articleId = ? ", articleId);
+		sql.append(", memberId = ?", memberId);
+		sql.append(", body = ? ", body);
+		sql.append("WHERE id = ?", id);
+
+		return dbUtil.update(dbConn, sql);
+		
 	}
 }

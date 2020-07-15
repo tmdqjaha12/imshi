@@ -15,25 +15,25 @@ public class HomeController extends Controller {
 	public String doAction() {
 		switch (actionMethodName) {
 		case "main":
-			return doActionMain(req, resp);
+			return doActionMain();
 		case "aboutMe":
-			return doActionAboutMe(req, resp);
+			return doActionAboutMe();
 		case "new":
-			return doActionnew(req, resp);
+			return doActionnew();
 		}
 
 		return "";
 	}
 
-	private String doActionnew(HttpServletRequest req, HttpServletResponse resp) {
+	private String doActionnew() {
 		return "home/new.jsp";
 	}
 
-	private String doActionAboutMe(HttpServletRequest req, HttpServletResponse resp) {
+	private String doActionAboutMe() {
 		return "home/aboutMe.jsp";
 	}
 
-	private String doActionMain(HttpServletRequest req, HttpServletResponse resp) {
+	private String doActionMain() {
 		return "home/main.jsp";
 	}
 

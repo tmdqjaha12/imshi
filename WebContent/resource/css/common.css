@@ -540,3 +540,14 @@ label[for] {
 	opacity:0.4;
 }
 /*list*/
+
+/*Article-Reply-Button & Box*/
+
+.modify-reply-box{
+	display:none;
+}
+
+.modify-reply-box.active {
+	display:block;
+}
+/*Article-Reply-Button & Box*/

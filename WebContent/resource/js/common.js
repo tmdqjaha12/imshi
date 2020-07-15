@@ -1,5 +1,7 @@
 console.clear();
 
+//모바일 사이드바
+
 function MobileSideBar__init() {
 	$('.mobile-top-bar .btn-toggle-mobile-side-bar').click(function() {
 		var $this = $(this);
@@ -13,6 +15,78 @@ function MobileSideBar__init() {
 		}
 	});
 }
+
+$(function() {
+	MobileSideBar__init();
+});
+
+// 댓글 버튼
+
+function modifyArticleReply__init() {
+	$('.modify-reply-button > button').click(function() {
+		var $this = $(this);
+
+		if ($this.hasClass('active')) {
+			$this.removeClass('active');
+			$('.modify-reply-box').removeClass('active');
+		} else {
+			$this.addClass('active')
+			$('.modify-reply-box').addClass('active');
+		}
+	});
+}
+
+$(function() {
+	modifyArticleReply__init();
+});
+
+// 댓글 폼 시작
+
+var replyFormSubmitted = false;
+
+function submitReplytForm(form){
+	if (replyFormSubmitted) {
+		alert('처리 중입니다.');
+		return
+	}
+	
+	form.body.value = form.body.value.trim();
+	if (form.body.value.length == 0){
+		alert('댓글을 입력해주세요.');
+		form.body.focus();
+		
+		return;
+	}
+	
+	form.submit();
+	replyFormSubmitted = true;
+}
+
+////댓글 수정 폼 ......
+
+var modifyReplyFormSubmitted = false;
+
+function submitModifyReplyForm(form){
+	if (modifyReplyFormSubmitted) {
+		alert('처리 중입니다.');
+		return
+	}
+	
+	form.body.value = form.body.value.trim();
+	if (form.replyBody.value.length == 0){
+		alert('댓글을 입력해주세요.');
+		form.body.focus();
+		
+		return;
+	}
+	
+	form.submit();
+	modifyReplyFormSubmitted = true;
+}
+
+// 댓글 폼 시작 끝
+
+// 글쓰기 폼 시작
 
 var writeFormSubmitted = false;
 
@@ -55,6 +129,9 @@ function submitWriteForm(form) {
 	form.submit();
 	writeFormSubmitted = true;
 }
+// 글쓰기 폼 끝
+
+// 로그인 폼 시작
 
 var loginFormSubmitted = false;
 
@@ -100,6 +177,9 @@ function submitLoginForm(form) {
 	form.submit();
 	loginFormSubmitted = true;
 }
+// 로그인 폼 끝
+
+// 회원가입 폼 시작
 
 var joinFormSubmitted = false;
 
@@ -164,6 +244,8 @@ function submitJoinForm(form) {
 	form.submit();
 	joinFormSubmitted = true;
 }
+
+// 회원가입 폼 끝
 
 // 유튜브 플러그인 시작
 function youtubePlugin() {
@@ -383,6 +465,3 @@ function submitWriteForm(form) {
 	form.submit();
 }
 
-$(function() {
-	MobileSideBar__init();
-});

@@ -26,31 +26,31 @@ public class MemberController extends Controller {
 	public String doAction() {
 		switch (actionMethodName) {
 		case "join":
-			return doActionJoin(req, resp);
+			return doActionJoin();
 		case "doJoin":
-			return doActionDoJoin(req, resp);
+			return doActionDoJoin();
 		case "login":
-			return doActionLogin(req, resp);
+			return doActionLogin();
 		case "doLogin":
-			return doActionDoLogin(req, resp);
+			return doActionDoLogin();
 		case "doLogout":
-			return doActionDoLogOut(req, resp);
+			return doActionDoLogOut();
 		}
 
 		return "";
 	}
 
-	private String doActionDoLogOut(HttpServletRequest req, HttpServletResponse resp) {
+	private String doActionDoLogOut() {
 		session.removeAttribute("loginedMemberId");
 
 		return "html:<script> alert('로그아웃 되었습니다.'); location.replace('../home/main'); </script>";
 	}
 
-	private String doActionLogin(HttpServletRequest req, HttpServletResponse resp) {
+	private String doActionLogin() {
 		return "member/login.jsp";
 	}
 
-	private String doActionDoLogin(HttpServletRequest req, HttpServletResponse resp) {
+	private String doActionDoLogin() {
 		String loginId = req.getParameter("loginId");
 		String loginPw = req.getParameter("loginPwReal");
 
@@ -73,29 +73,31 @@ public class MemberController extends Controller {
 		return "html:<script> alert('로그인 완료'); location.replace('../home/main'); </script>";
 	}
 
-	private String doActionJoin(HttpServletRequest req, HttpServletResponse resp) {
+	private String doActionJoin() {
 		return "member/join.jsp";
 	}
 
-	private String doActionDoJoin(HttpServletRequest req, HttpServletResponse resp) {
+	private String doActionDoJoin() {
 
 		String loginId = req.getParameter("loginId");
+		String loginPw = req.getParameter("loginPwReal");
 		String name = req.getParameter("name");
 		String nickname = req.getParameter("nickname");
-		String loginPw = req.getParameter("loginPwReal");
-		
-		if (memberSercive.getLoginIdFact(loginId)) {
-			return "html:<script> alert('중복된 계정입니다.'); location.replace('join'); </script>";
+		String email = req.getParameter("email");
+		boolean isJoinableLoginId = memberSercive.isJoinableLoginId(loginId);
+		if (isJoinableLoginId == false) {
+			return String.format("html:<script> alert('%s(은)는 이미 사용중인 아이디 입니다.'); history.back(); </script>", loginId);
 		}
-		
-		if (memberSercive.getNickNameFact(nickname)) {
-			return "html:<script> alert('중복된 닉네임입니다.'); location.replace('join'); </script>";
+		boolean isJoinableNickname = memberSercive.isJoinableNickname(nickname);
+		if (isJoinableNickname == false) {
+			return String.format("html:<script> alert('%s(은)는 이미 사용중인 닉네임 입니다.'); history.back(); </script>", nickname);
 		}
-
-
-		int id = memberSercive.join(loginId, name, nickname, loginPw);
-
-		return "html:<script> alert('" + id + "번째 회원을 환영합니다.'); location.replace('../home/main'); </script>";
+		boolean isJoinableEmail = memberSercive.isJoinableEmail(email);
+		if (isJoinableEmail == false) {
+			return String.format("html:<script> alert('%s(은)는 이미 사용중인 이메일 입니다.'); history.back(); </script>", email);
+		}
+		memberSercive.join(loginId, loginPw, name, nickname, email);
+		return String.format("html:<script> alert('%s님 환영합니다.'); location.replace('../home/main'); </script>", name);
 	}
 
 }

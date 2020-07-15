@@ -1,13 +1,17 @@
 <%@ page import="java.util.List"%>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="java.util.Map" %>
 <%@ page import="com.sbs.java.blog.dto.Article"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ include file="/jsp/part/head.jspf"%>
+
 <%
 	List<Article> articles = (List<Article>) request.getAttribute("articles");
 	int totalPage = (int) request.getAttribute("totalPage");
 	int paramPage = (int) request.getAttribute("page");
 	String cateItemName = (String) request.getAttribute("cateItemName");
+	Map<Integer, String> memberNickNames = (Map<Integer, String>) request.getAttribute("memberNickNames");
 %>
 <!-- 하이라이트 라이브러리 추가, 토스트 UI 에디터에서 사용됨 -->
 <script
@@ -139,7 +143,10 @@
 					<a href="./detail?id=<%=article.getId()%>">
 						<ul>
 							<li>No. <%=article.getId()%></li>
+							<li><%=article.getRegDate() %></li>
 							<li class="txt_line">※ <%=article.getTitle()%></li>
+							<li><%=article.getHit() %></li>
+							<li><%=memberNickNames.get(article.getMemberId())%></li>	
 						</ul> 
 						<img class="title-bg-1" src="${pageContext.request.contextPath}/resource/img/java.jpg" alt="" />
 					</a>

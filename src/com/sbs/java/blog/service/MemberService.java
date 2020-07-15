@@ -19,10 +19,23 @@ public class MemberService extends Service {
 		super(req, resp);
 		memberDao = new MemberDao(dbConn, req, resp);
 	}
-
-	public int join(String loginId, String name, String nickname, String loginPw) {
-		return memberDao.join(loginId, name, nickname, loginPw);
+	
+	public boolean isJoinableLoginId(String loginId) {
+		return memberDao.isJoinableLoginId(loginId);
 	}
+
+	public boolean isJoinableNickname(String nickname) {
+		return memberDao.isJoinableNickname(nickname);
+	}
+
+	public boolean isJoinableEmail(String email) {
+		return memberDao.isJoinableEmail(email);
+	}
+
+	public int join(String loginId, String loginPw, String name, String nickname, String email) {
+		return memberDao.join(loginId, loginPw, name, nickname, email);
+	}
+
 
 	public Member login(String loginId, String loginPw) {
 		return memberDao.login(loginId, loginPw);
@@ -38,5 +51,9 @@ public class MemberService extends Service {
 
 	public boolean getNickNameFact(String nickname) {
 		return memberDao.getNickNameFact(nickname);
+	}
+
+	public Member getMemberById(int id) {
+		return memberDao.getMemberById(id);
 	}
 }

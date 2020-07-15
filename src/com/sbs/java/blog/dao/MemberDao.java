@@ -21,19 +21,52 @@ public class MemberDao extends Dao {
 		dbUtil = new DBUtil(req, resp);
 	}
 
-	public int join(String loginId, String name, String nickname, String loginPw) {
-		SecSql secSql = new SecSql();
+	public int join(String loginId, String loginPw, String name, String nickname, String email) {
+		SecSql sql = SecSql.from("INSERT INTO member");
+		sql.append("SET regDate = NOW()");
+		sql.append(", updateDate = NOW()");
+		sql.append(", loginId = ?", loginId);
+		sql.append(", loginPw = ?", loginPw);
+		sql.append(", name = ?", name);
+		sql.append(", nickname = ?", nickname);
+		sql.append(", email = ?", email);
+		return DBUtil.insert(dbConn, sql);
+	}
+	
+	public boolean isJoinableLoginId(String loginId) {
+		SecSql sql = SecSql.from("SELECT COUNT(*) AS cnt");
+		sql.append("FROM `member`");
+		sql.append("WHERE loginId = ?", loginId);
+		return dbUtil.selectRowIntValue(dbConn, sql) == 0;
+	}
+	public boolean isJoinableNickname(String nickname) {
+		SecSql sql = SecSql.from("SELECT COUNT(*) AS cnt");
+		sql.append("FROM `member`");
+		sql.append("WHERE nickname = ?", nickname);
+		return dbUtil.selectRowIntValue(dbConn, sql) == 0;
+	}
+	
+	public boolean isJoinableEmail(String email) {
+		SecSql sql = SecSql.from("SELECT COUNT(*) AS cnt");
+		sql.append("FROM `member`");
+		sql.append("WHERE email = ?", email);
+		return dbUtil.selectRowIntValue(dbConn, sql) == 0;
+	}
+	
+	public int getMemberIdByLoginIdAndLoginPw(String loginId, String loginPw) {
+		SecSql sql = SecSql.from("SELECT id");
+		sql.append("FROM `member`");
+		sql.append("WHERE loginId = ?", loginId);
+		sql.append("AND loginPw = ?", loginPw);
 
-		secSql.append("INSERT INTO member");
-		secSql.append("SET regDate = NOW()");
-		secSql.append(", updateDate = NOW()");
-		secSql.append(", memberStatus = '1'");
-		secSql.append(", loginId = ?", loginId);
-		secSql.append(", name = ?", name);
-		secSql.append(", nickname = ?", nickname);
-		secSql.append(", loginPw = ?", loginPw);
-
-		return dbUtil.insert(dbConn, secSql);
+		return dbUtil.selectRowIntValue(dbConn, sql);
+	}
+	
+	public Member getMemberById(int id) {
+		SecSql sql = SecSql.from("SELECT *");
+		sql.append("FROM `member`");
+		sql.append("WHERE id = ?", id);
+		return new Member(dbUtil.selectRow(dbConn, sql));
 	}
 
 	public Member login(String loginId, String loginPw) {

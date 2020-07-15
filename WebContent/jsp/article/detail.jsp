@@ -1,13 +1,16 @@
+<%@ page import="java.util.HashMap"%>
+<%@ page import="java.util.Map"%>
+<%@ page import="java.util.List"%>
 <%@ page import="com.sbs.java.blog.dto.Article"%>
 <%@ page import="com.sbs.java.blog.dto.Member"%>
 <%@ page import="com.sbs.java.blog.dto.ArticleReply"%>
-<%@ page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ include file="/jsp/part/head.jspf"%>
 <%
 	Article article = (Article) request.getAttribute("article");
 	List<ArticleReply> articleReplies = (List<ArticleReply>) request.getAttribute("articleReplies");
+	Map<Integer, String> memberNickNames = (Map<Integer, String>) request.getAttribute("memberNickNames");
 %>
 <!-- 하이라이트 라이브러리 추가, 토스트 UI 에디터에서 사용됨 -->
 <script
@@ -74,7 +77,7 @@
 
 			<%
 				if (session.getAttribute("loginedMemberId") != null) {
-					if (article.getMemberId() == (int)session.getAttribute("loginedMemberId")) {
+					if (article.getMemberId() == (int) session.getAttribute("loginedMemberId")) {
 			%>
 			<div class="button flex" style="">
 				<form action="modify" method="POST" encType="multiplart/form-data">
@@ -102,26 +105,29 @@
 
 
 <!-- 댓글 -->
-<div class="con comment" style="background-color: pink; width: 100%; margin-top:50px">
-	<form action="doComment" method="POST">
+<%
+	if (session.getAttribute("loginedMemberId") != null) {
+%>
+<div class="con comment" style="background-color: pink; width: 100%; margin-top: 50px;">
+	<form action="doReply" method="POST" onsubmit="submitReplytForm(this); return false;">
 		<input type="hidden" name="articleId" value="<%=article.getId()%>" />
-		<input type="hidden" name="memberId"
-			value="<%=article.getMemberId()%>" />
+		<input type="hidden" name="memberId" value="<%=session.getAttribute("loginedMemberId")%>" />
 		<table>
 			<tbody>
 				<tr>
-					<td><textarea style="resize: none;" cols="50" rows="5"
-							placeholder="댓글을 입력하세요. " name="body"></textarea></td>
+					<td><textarea style="resize: none;" cols="50" rows="5" placeholder="댓글을 입력하세요. " name="body"></textarea></td>
 					<td><input style="padding: 30px;" type="submit" value="등록" /></td>
 				</tr>
-
 			</tbody>
 		</table>
 	</form>
 </div>
 
-<div class="con  comment-List"
-	style="background-color: pink; width: 1000px; margin-top: 50px;">
+<%
+	}
+%>
+
+<div class="con  comment-List" style="background-color: pink; width: 1000px; margin-top: 50px;">
 	<div class="con articleRepliesItem">
 		<%
 			for (ArticleReply articleReply : articleReplies) {
@@ -129,11 +135,49 @@
 		<table style="border: 1px solid red;">
 			<tbody>
 				<tr>
-					<td><%=articleReply.getRegDate()%></td>
+					<td>작성일 : <%=articleReply.getRegDate()%></td>
 				</tr>
 				<tr>
-					<td><%=articleReply.getBody()%></td>
+					<td>내용 : <%=articleReply.getBody()%></td>
 				</tr>
+				<tr>
+					<td>작성자 : <%=memberNickNames.get(articleReply.getMemberId())%></td>
+				</tr>
+
+				<%
+					if (session.getAttribute("loginedMemberId") != null) {
+							if (articleReply.getMemberId() == (int) session.getAttribute("loginedMemberId")) {
+				%>
+				<div class="modify-reply-button">
+					<button class="">수정</button>
+				</div>
+
+				<div class="modify-reply-box" style="background-color: pink; width: 100%; margin-top: 50px;">
+					<form action="doReplyModify" method="POST" encType="multiplart/form-data" onsubmit="submitModifyReplyForm(this); return false;">
+						<input type="hidden" name="articleId" value="<%=articleReply.getArticleId()%>" /> 
+						<input type="hidden" name="memberId" value="<%=session.getAttribute("loginedMemberId")%>" /> 
+						<input type="hidden" name="replyBody" value="<%=articleReply.getBody()%>" />
+						<input type="hidden" name="regDate" value="<%=articleReply.getRegDate()%>" /> 
+						<input type="hidden" name="replyId" value="<%=articleReply.getId()%>" /> 
+						<input type="hidden" name="id" value="${param.id}" />
+						
+						<textarea style="resize: none;" cols="50" rows="5" placeholder="댓글을 입력하세요. " name="body"><%=articleReply.getBody()%></textarea>
+						<input style="padding: 30px;" type="submit" value="확인" />
+					</form>
+				</div>
+				
+				<div class="delete-reply-button">
+					<form action="doReplyDelete" method="POST"
+						encType="multiplart/form-data">
+						<input type="hidden" name="replyId"
+							value="<%=articleReply.getId()%>" /> <input type="submit"
+							value="삭제" /> <input type="hidden" name="id" value="${param.id}" />
+					</form>
+				</div>
+				<%
+					}
+						}
+				%>
 			</tbody>
 		</table>
 
@@ -142,7 +186,5 @@
 		%>
 	</div>
 </div>
-
-
 
 <%@ include file="/jsp/part/foot.jspf"%>

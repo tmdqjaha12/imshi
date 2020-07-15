@@ -10,7 +10,6 @@ public class Dto {
 
 	public Dto(Map<String, Object> row) {
 
-//		if((String) row.get("regDate") != null) {
 		this.id = (int) row.get("id");
 		this.regDate = (String) row.get("regDate");
 		this.extra = new HashMap<>();
@@ -22,11 +21,6 @@ public class Dto {
 				this.extra.put(extraKey, value);
 			}
 		}
-//		}
-	}
-
-	public Dto() {
-
 	}
 
 	public int getId() {

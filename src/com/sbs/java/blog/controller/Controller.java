@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.sbs.java.blog.dto.CateItem;
+import com.sbs.java.blog.dto.Member;
 import com.sbs.java.blog.service.ArticleService;
 import com.sbs.java.blog.service.MemberService;
 
@@ -38,6 +39,22 @@ public abstract class Controller {
 		List<CateItem> cateItems = articleService.getForPrintCateItems();
 		
 		req.setAttribute("cateItems", cateItems);
+		
+		// 사용자 관련 정보를 리퀘스트 객체에 정리해서 넣기
+		int loginedMemberId = -1;
+		boolean isLogined = false;
+		Member loginedMember = null;
+		
+		if ( session.getAttribute("loginedMemberId") != null) {
+			loginedMemberId = (int)session.getAttribute("loginedMemberId");
+			isLogined = true;
+			loginedMember = memberSercive.getMemberById(loginedMemberId);
+		}
+		
+		req.setAttribute("loginedMemberId", loginedMemberId);
+		req.setAttribute("loginedMember", loginedMember);
+		req.setAttribute("isLogined", isLogined);
+		
 	}
 
 	public void afterAction() {

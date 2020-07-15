@@ -45,7 +45,7 @@
 
 <body>
 
-	<!-- 모바일 바 -->
+	<!-- 모바일 바 시작 -->
 
 	<div class="mobile-top-bar visible-on-sm-down flex">
 		<a href="#" class="btn-toggle-mobile-side-bar flex flex-ai-c"> 
@@ -89,8 +89,9 @@
 			</ul>
 		</nav>
 	</div>
+	<!-- 모바일 바 끝 -->
 	
-	<!-- 탑 바 -->
+	<!-- PC 탑 바 시작 -->
 	
 	<div class="top-bar visible-on-md-up">
 		<div class="con flex flex-jc-sb flex-column-nowrap"><!-- style="background-color:pink;" -->
@@ -138,6 +139,8 @@
 			
 		</div>
 	</div>
+	
+	<!-- PC 탑 바 시작 끝 -->
 	
 	<% if( session.getAttribute("loginedMemberId") == null) {	%>
 	

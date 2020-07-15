@@ -13,6 +13,7 @@ import com.sbs.java.blog.controller.ArticleController;
 import com.sbs.java.blog.controller.Controller;
 import com.sbs.java.blog.controller.HomeController;
 import com.sbs.java.blog.controller.MemberController;
+import com.sbs.java.blog.controller.TestController;
 import com.sbs.java.blog.exception.SQLErrorException;
 import com.sbs.java.blog.util.Util;
 
@@ -40,7 +41,7 @@ public class App {
 	}
 
 	private String getDbUrl() {
-		return "jdbc:mysql://site36.iu.gy:3306/site36?serverTimezone=Asia/Seoul&useOldAliasMetadataBehavior=true&zeroDateTimeBehavior=convertToNull";
+		return "jdbc:mysql://site41.iu.gy:3306/site41?serverTimezone=Asia/Seoul&useOldAliasMetadataBehavior=true&zeroDateTimeBehavior=convertToNull";
 	}
 
 	public void start() throws ServletException, IOException {
@@ -63,7 +64,7 @@ public class App {
 		} catch (SQLException e) {
 			Util.printEx("SQL 예외(커넥션 열기)", resp, e);
 		} catch (SQLErrorException e) {
-			Util.printEx(e.getMessage(), resp, e);
+			Util.printEx(e.getMessage(), resp, e.getOrigin());
 		} catch (Exception e) {
 			Util.printEx("기타 예외", resp, e);
 		} finally {
@@ -102,20 +103,19 @@ public class App {
 		case "home":
 			controller = new HomeController(dbConn, actionMethodName, req, resp);
 			break;
+		case "test":
+			controller = new TestController(dbConn, actionMethodName, req, resp);
+			break;
 		}
 
 		if (controller != null) {
 			String actionResult = controller.executeAction();
-			
-//			System.out.println("actionResult : " + actionResult);
 			if (actionResult.equals("")) {
 				resp.getWriter().append("액션의 결과가 없습니다.");
 			} else if (actionResult.endsWith(".jsp")) {
 				String viewPath = "/jsp/" + actionResult;
-//				System.out.println("viewPath : "+ viewPath);
 				req.getRequestDispatcher(viewPath).forward(req, resp);
 			} else if (actionResult.startsWith("html:")) {
-//				System.out.println("actionResult.substring(5) : " + actionResult.substring(5));
 				resp.getWriter().append(actionResult.substring(5));
 			} else {
 				resp.getWriter().append("처리할 수 없는 액션결과입니다.");
@@ -126,7 +126,7 @@ public class App {
 	}
 
 	private String getDbId() {
-		return "site36";
+		return "site41";
 	}
 
 	private String getDbPassword() {
